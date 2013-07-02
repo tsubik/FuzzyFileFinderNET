@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyFileFinderNET.Lib", "FuzzyFileFinderNET.Lib\FuzzyFileFinderNET.Lib.csproj", "{DFA10E15-759E-4746-A832-410072EA7C02}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyFileFinderNET.Tests", "FuzzyFileFinderNET.Tests\FuzzyFileFinderNET.Tests.csproj", "{B40ED624-F567-4FB4-8A1C-99002BF02E2E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFA10E15-759E-4746-A832-410072EA7C02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFA10E15-759E-4746-A832-410072EA7C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFA10E15-759E-4746-A832-410072EA7C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFA10E15-759E-4746-A832-410072EA7C02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B40ED624-F567-4FB4-8A1C-99002BF02E2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B40ED624-F567-4FB4-8A1C-99002BF02E2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B40ED624-F567-4FB4-8A1C-99002BF02E2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B40ED624-F567-4FB4-8A1C-99002BF02E2E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

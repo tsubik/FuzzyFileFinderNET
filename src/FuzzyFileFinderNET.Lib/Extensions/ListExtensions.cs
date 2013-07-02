@@ -11,7 +11,7 @@ namespace FuzzyFileFinderNET.Extensions
 		{
 			T obj = list.LastOrDefault();
 			list.RemoveAt(list.Count - 1);
-			return obj;  
+			return obj;
 		}
 	}
 }

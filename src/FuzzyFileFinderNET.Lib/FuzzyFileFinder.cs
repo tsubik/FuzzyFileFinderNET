@@ -190,6 +190,8 @@ namespace VSGoToFile
 
 		#endregion
 
+		#region Load directories tree from the file system
+
 		public void ReScan()
 		{
 			Files.Clear();
@@ -215,6 +217,8 @@ namespace VSGoToFile
 				}
 			}
 		}
+
+		#endregion
 
 		//TODO Implement this function 
 		private bool IsIgnored(string name)
@@ -263,14 +267,13 @@ namespace VSGoToFile
 			if(pathParts.Last() == FILE_SEPARATOR.ToString())
 				pathParts.Add("");
 
-			var fileNamePart = pathParts.LastOrDefault();
-			pathParts.RemoveAt(pathParts.Count -1 );
+			var fileNamePart = pathParts.Pop();
 			string pathRegexRaw;
 			Regex pathRegex = null;
 
 			if(pathParts.Any())
 			{
-				pathRegexRaw = "^(.*?)" + pathParts.Select(part => MakePattern(part)).Aggregate((str1, str2) => str1 + "(.*?"+Regex.Escape(FILE_SEPARATOR.ToString())+".*?)" + str2) + "(.*?)$";
+				pathRegexRaw = MakePathPattern(pathParts);
 				pathRegex = new Regex(pathRegexRaw, RegexOptions.IgnoreCase);
 			}
 
@@ -329,6 +332,11 @@ namespace VSGoToFile
 			return strBuilder.ToString();
 		}
 
+		public string MakePathPattern(List<string> pathParts)
+		{
+			return "^(.*?)" + pathParts.Select(part => MakePattern(part)).Aggregate((str1, str2) => str1 + "(.*?" + Regex.Escape(FILE_SEPARATOR.ToString()) + ".*?)" + str2) + "(.*?)$";
+		}
+
 		// Match the given path against the regex, caching the result in +path_matches+.
 		// If +path+ is already cached in the path_matches cache, just return the cached
 		// value.
@@ -381,6 +389,8 @@ namespace VSGoToFile
 
 		private string DetermineSharedPrefix()
 		{
+			if (Roots.Count == 0)
+				return string.Empty;
 			//the common case: if there is only a single root, then the entire
 			//name of the root is the shared prefix.
 			if (Roots.Count == 1)

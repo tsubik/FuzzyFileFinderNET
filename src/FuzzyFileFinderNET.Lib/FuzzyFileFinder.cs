@@ -51,6 +51,7 @@ namespace VSGoToFile
 
 		public class Directory
 		{
+			//full directory path
 			public string Name { get; private set; }
 			public bool IsRoot { get; private set; }
 			public List<Directory> SubDirectories { get; set; }
@@ -95,7 +96,13 @@ namespace VSGoToFile
 		public string SharedPrefix { get; private set; }
 		public Regex SharedPrefixRegex { get; private set; }
 		public List<string> Ignores { get; private set; }
-		private char FILE_SEPARATOR = System.IO.Path.DirectorySeparatorChar;
+		
+		private char _FILE_SEPARATOR = System.IO.Path.DirectorySeparatorChar;
+		public char FILE_SEPARATOR
+		{
+			get { return _FILE_SEPARATOR; }
+			set { FILE_SEPARATOR = value; }
+		}
 
 		public FuzzyFileFinder(List<string> directories, List<string> fullFileNames, int ceiling = 10000, List<string> ignores = null)
 		{
@@ -259,7 +266,6 @@ namespace VSGoToFile
 		// * :score refers to a value between 0 and 1 indicating how closely
 		//   the file matches the given pattern. A score of 1 means the
 		//   pattern matches the file exactly.
-
 		public void Search(string pattern, Action<MatchFileResult> block)
 		{
 			pattern.Replace(" ", "");
@@ -352,7 +358,7 @@ namespace VSGoToFile
 			if(pathRegex != null)
 			{
 				var match = matchableName.Match(pathRegex);
-				pathMatches.Add(path, match.Length > 0 ? BuildMatchResult(match, pathSegments) : new MatchResult { Score = 1, Result = matchableName, Missed = true });
+				pathMatches.Add(path, match.Success ? BuildMatchResult(match, pathSegments) : new MatchResult { Score = 1, Result = matchableName, Missed = true });
 			}
 			else
 			{
@@ -428,24 +434,23 @@ namespace VSGoToFile
 			int insideChars = 0;
 			int totalChars = 0;
 
-			foreach (Capture capture in match.Captures)
+			int index = 0;
+			foreach (Group group in match.Groups)
 			{
-				if (capture.Length > 0)
-				{
-					// odd-numbered captures are matches inside the pattern.
-					// even-numbered captures are matches between the pattern's elements.
+				bool inside = index % 2 == 0;
+				//skip first group because in .net it is the matching word
+				if(index++ == 0) continue;
+				// even-numbered captures are matches inside the pattern.
+				// odd-numbered captures are matches between the pattern's elements.
 
-					bool inside = capture.Index % 2 != 0;
+				totalChars += Regex.Replace(group.Value, "(" + Regex.Escape(FILE_SEPARATOR.ToString()) + ")", "", RegexOptions.IgnoreCase).Length;
+				if (inside) insideChars += group.Value.Length;
 
-					totalChars += Regex.Replace(capture.Value, "(" + Regex.Escape(FILE_SEPARATOR.ToString()) + ")", "", RegexOptions.IgnoreCase).Length;
-					if (inside) insideChars += capture.Value.Length;
-
-					var lastCharacterRun = runs.LastOrDefault();
-					if (lastCharacterRun != null && lastCharacterRun.Inside == inside)
-						lastCharacterRun.String += capture.Value;
-					else
-						runs.Add(new CharacterRun { Inside = inside, String = capture.Value });
-				}
+				var lastCharacterRun = runs.LastOrDefault();
+				if (lastCharacterRun != null && lastCharacterRun.Inside == inside)
+					lastCharacterRun.String += group.Value;
+				else
+					runs.Add(new CharacterRun { Inside = inside, String = group.Value });
 			}
 
 			// Determine the score of this match.

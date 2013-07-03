@@ -35,5 +35,20 @@ namespace VSGoToFile.Tests
 
 			Assert.AreEqual(escapePattern, _finder.MakePathPattern(enterPathParts));
 		}
+
+		[Test]
+		public void is_matching_foo_catalog()
+		{
+			List<string> testFixtures = new List<string> {
+				@"dev\.net\vspniff\test.sln",
+				@"dev\.net\vsgotofile\tomek.sln",
+				@"dev\web\sfasystem\readme.txt"
+			};
+
+			_finder = new FuzzyFileFinder(null, testFixtures);
+			var results = _finder.Find(@".net\goto");
+
+			Assert.AreEqual(true, true);
+		}
 	}
 }
